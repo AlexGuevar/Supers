@@ -8,20 +8,21 @@
     android:elevation="6dp">
 
     <LinearLayout
+        android:id="@+id/heroListener"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
 
         <ImageView
-            android:id="@+id/heroImg"
+            android:id="@+id/imgHero"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:src="@drawable/ic_launcher_background"
             android:scaleType="centerCrop"/>
 
         <TextView
-            android:id="@+id/hereoName"
+            android:id="@+id/tvHeroName"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"

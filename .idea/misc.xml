@@ -3,12 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/gagmn/AndroidStudioProjects/Supers/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.293" />
+        <entry key="..\:/Users/gagmn/AndroidStudioProjects/Supers/app/src/main/res/drawable/bg_white_fff.xml" value="0.293" />
         <entry key="..\:/Users/gagmn/AndroidStudioProjects/Supers/app/src/main/res/layout/activity_main.xml" value="0.3546875" />
         <entry key="..\:/Users/gagmn/AndroidStudioProjects/Supers/app/src/main/res/layout/appearance.xml" value="0.3546875" />
         <entry key="..\:/Users/gagmn/AndroidStudioProjects/Supers/app/src/main/res/layout/biography.xml" value="0.3546875" />
+        <entry key="..\:/Users/gagmn/AndroidStudioProjects/Supers/app/src/main/res/layout/connections.xml" value="0.25" />
+        <entry key="..\:/Users/gagmn/AndroidStudioProjects/Supers/app/src/main/res/layout/details_fragment_layout.xml" value="0.34193840579710144" />
         <entry key="..\:/Users/gagmn/AndroidStudioProjects/Supers/app/src/main/res/layout/fragment_details.xml" value="0.340625" />
         <entry key="..\:/Users/gagmn/AndroidStudioProjects/Supers/app/src/main/res/layout/fragment_home.xml" value="0.3546875" />
         <entry key="..\:/Users/gagmn/AndroidStudioProjects/Supers/app/src/main/res/layout/hero_item_view.xml" value="0.3536458333333333" />
+        <entry key="..\:/Users/gagmn/AndroidStudioProjects/Supers/app/src/main/res/layout/home_fragment_layout.xml" value="0.17604166666666668" />
         <entry key="..\:/Users/gagmn/AndroidStudioProjects/Supers/app/src/main/res/layout/powerstats.xml" value="0.3546875" />
         <entry key="..\:/Users/gagmn/AndroidStudioProjects/Supers/app/src/main/res/layout/work.xml" value="0.3546875" />
       </map>

@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/tvOccupation"
+        android:id="@+id/tvGroupAffiliation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-condensed-medium"
@@ -16,7 +17,7 @@
         android:layout_margin="10dp"/>
 
     <TextView
-        android:id="@+id/tvBase"
+        android:id="@+id/tvRelatives"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-condensed-medium"
@@ -24,6 +25,4 @@
         android:textSize="20sp"
         android:text="--"
         android:layout_margin="10dp"/>
-
-
 </LinearLayout>

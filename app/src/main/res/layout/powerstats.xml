@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/intelligence"
+        android:id="@+id/tvIntelligence"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-condensed-medium"
@@ -16,7 +16,7 @@
         android:layout_margin="10dp"/>
 
     <TextView
-        android:id="@+id/strength"
+        android:id="@+id/tvStrength"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-condensed-medium"
@@ -26,7 +26,7 @@
         android:layout_margin="10dp"/>
 
     <TextView
-        android:id="@+id/speed"
+        android:id="@+id/tvSpeed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-condensed-medium"
@@ -35,7 +35,7 @@
         android:text="--"
         android:layout_margin="10dp"/>
     <TextView
-        android:id="@+id/durability"
+        android:id="@+id/tvDurability"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-condensed-medium"

@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.killacorp.supers.R
 import com.killacorp.supers.databinding.DetailsFragmentLayoutBinding
 import com.killacorp.supers.utils.Extras
@@ -31,36 +33,51 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        activity!!.findViewById<TextView>(R.id.title).visibility = View.GONE
+        activity!!.findViewById<TextView>(R.id.tvTitle).visibility = View.GONE
         val detailsFragmentArgs : DetailsFragmentArgs? = arguments?.let { DetailsFragmentArgs.fromBundle(it) }
         lifecycleScope.launch {
             if (detailsFragmentArgs != null) {
                 viewModel.getHeroDetails(Extras.apiKey,detailsFragmentArgs.id)
+
+                ///-------- General Info
                 viewModel.details.observe(viewLifecycleOwner){ item ->
-                    Picasso.get().load(item.image?.url).into(binding.image)
+                    Glide.with(binding.image.context)
+                        .load(item.image?.url)
+                        .error(R.drawable.ic_launcher_foreground)
+                        .into(binding.image)
+                    binding.btnBack.setOnClickListener {
+                        findNavController().popBackStack()
+                    }
+                    binding.tvHeroName.text = item.name
 
-                    binding.powerStats.intelligence.text = "Intelligence : "  + item.powerstats.intelligence
-                    binding.powerStats.strength.text = "Strength :" + item.powerstats.strength
-                    binding.powerStats.speed.text = "Speed : " + item.powerstats.speed
-                    binding.powerStats.durability.text = "Durability " + item.powerstats.durability
+                    ///--------powerStats
+                    binding.powerStats.tvIntelligence.text = "Intelligence : "  + item.powerstats.intelligence
+                    binding.powerStats.tvStrength.text = "Strength : " + item.powerstats.strength
+                    binding.powerStats.tvSpeed.text = "Speed : " + item.powerstats.speed
+                    binding.powerStats.tvDurability.text = "Durability : " + item.powerstats.durability
 
 
-                    ///--------
-                    binding.biography.fullName.text = "Full Name : " + item.biography.fullName
-                    binding.biography.placeOfBirth.text = "Place Of Birth : " + item.biography.placeOfBirth
-                    binding.biography.publisher.text = "Publisher : " + item.biography.publisher
-                    binding.biography.alignment.text = "Alignment : " + item.biography.alignment
+                    ///--------biography
+                    binding.biography.tvFullName.text = "Full Name : " + item.biography.fullName
+                    binding.biography.tvPlaceOfBirth.text = "Place Of Birth : " + item.biography.placeOfBirth
+                    binding.biography.tvPublisher.text = "Publisher : " + item.biography.publisher
+                    binding.biography.tvAlignment.text = "Alignment : " + item.biography.alignment
 
 
-                    //--------
-                    binding.appearance.gender.text  = "Gender : " + item.appearance.gender
-                    binding.appearance.race.text  = "Race : " + item.appearance.gender
-                    binding.appearance.eyeColor.text  = "Eye Color : " + item.appearance.gender
-                    binding.appearance.hairColor.text  = "Hair Color : " + item.appearance.gender
+                    //--------appearance
+                    binding.appearance.tvGender.text  = "Gender : " + item.appearance.gender
+                    binding.appearance.tvRace.text  = "Race : " + item.appearance.race
+                    binding.appearance.tvEyeColor.text  = "Eye Color : " + item.appearance.eyeColor
+                    binding.appearance.tvHairColor.text  = "Hair Color : " + item.appearance.hairColor
 
-                    //----------
-                    binding.work.occupation.text  = "Occupation : " + item.work.occupation
-                    binding.work.base.text  = "Base : " + item.work.base
+                    //----------work
+                    binding.work.tvOccupation.text  = "Occupation : " + item.work.occupation
+                    binding.work.tvBase.text  = "Base : " + item.work.base
+
+                    //----------connections
+                    binding.connections.tvGroupAffiliation.text  = "Occupation : " + item.connections.groupAffiliation
+                    binding.connections.tvRelatives.text  = "Base : " + item.connections.relatives
+
                 }
             }
         }
