@@ -20,11 +20,11 @@ object AppModule {
     @Provides
     @Singleton
     fun getRetrofit() : AuthService {
+
         val httpLoggingInterceptor = HttpLoggingInterceptor()
         val interceptor = httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor(interceptor)
-            .build()
+        val okHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
+
         return Retrofit.Builder()
             .baseUrl(Extras.baseUrl)
             .addConverterFactory(GsonConverterFactory.create())

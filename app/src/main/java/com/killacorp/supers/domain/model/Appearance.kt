@@ -4,11 +4,15 @@ import com.google.gson.annotations.SerializedName
 
 data class Appearance(
     @SerializedName("eye-color")
-    val eyeColor: String,
-    val gender: String,
+    val eyeColor: String? = null,
+    @SerializedName("gender")
+    val gender: String? = null,
     @SerializedName("hair-color")
-    val hairColor: String,
-    val height: List<String>,
-    val race: String,
-    val weight: List<String>
+    val hairColor: String? = null,
+    @SerializedName("height")
+    val height: List<String>? = null,
+    @SerializedName("race")
+    val race: String? = null,
+    @SerializedName("weight")
+    val weight: List<String>? = null
 )

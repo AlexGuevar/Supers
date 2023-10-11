@@ -1,5 +1,8 @@
 package com.killacorp.supers.domain.model
 
+import com.google.gson.annotations.SerializedName
+
 data class Image(
-    val url: String
+    @SerializedName("url")
+    val url: String? = null
 )

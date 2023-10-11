@@ -1,13 +1,24 @@
 package com.killacorp.supers.domain.model
 
+import com.google.gson.annotations.SerializedName
+
 data class HeroModel(
-    val appearance: Appearance,
-    val biography: Biography,
-    val connections: Connections,
-    val id: String,
-    val image: Image? = null ,
-    val name: String,
-    val powerstats: Powerstats,
-    val response: String,
-    val work: Work
+    @SerializedName("appearance")
+    val appearance: Appearance? = null,
+    @SerializedName("biography")
+    val biography: Biography? = null,
+    @SerializedName("connections")
+    val connections: Connections? = null,
+    @SerializedName("id")
+    val id: String? = null,
+    @SerializedName("image")
+    val image: Image? = null,
+    @SerializedName("name")
+    val name: String? = null,
+    @SerializedName("powerstats")
+    val powerStats: PowerStats? = null,
+    @SerializedName("response")
+    val response: String? = null,
+    @SerializedName("work")
+    val work: Work? = null
 )

@@ -1,6 +1,10 @@
 package com.killacorp.supers.domain.model
 
+import com.google.gson.annotations.SerializedName
+
 data class Work(
-    val base: String,
-    val occupation: String
+    @SerializedName("base")
+    val base: String? = null,
+    @SerializedName("occupation")
+    val occupation: String? = null
 )

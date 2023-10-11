@@ -15,14 +15,15 @@ import com.killacorp.supers.R
 import com.killacorp.supers.databinding.HomeFragmentLayoutBinding
 import com.killacorp.supers.utils.Extras
 import com.killacorp.supers.view.home.adapter.HeroAdapter
-import com.killacorp.supers.view.home.vm.HereosViewModel
+import com.killacorp.supers.view.home.vm.HeroesViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
+
     private var initialSize = 20
-    private val viewModel: HereosViewModel by viewModels()
+    private val viewModel: HeroesViewModel by viewModels()
     private lateinit var heroAdapter: HeroAdapter
     private lateinit var binding : HomeFragmentLayoutBinding
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -33,58 +34,69 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        activity!!.findViewById<TextView>(R.id.tvTitle).visibility = View.VISIBLE
+        activity?.findViewById<TextView>(R.id.tvTitle)?.visibility = View.VISIBLE
+
+        handleLoading()
+        handleError()
+        setUpRecyclerView()
+        loadData()
+        loadMore()
+    }
+
+    private fun handleError() {
+        viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
+            if (errorMessage != null) {
+                binding.bottomText.text = errorMessage
+                binding.bottomText.visibility = View.VISIBLE
+            } else {
+                binding.bottomText.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun handleLoading() {
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE
+        }
+    }
+
+    private fun setUpRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.setHasFixedSize(true)
-
         heroAdapter = HeroAdapter()
         binding.recyclerView.adapter = heroAdapter
+    }
 
-        viewModel.isLoading.observe(viewLifecycleOwner){
-            if(it){
-                binding.progressBar.visibility = View.VISIBLE
-            } else {
-                binding.progressBar.visibility = View.GONE
-            }
+    private fun loadData() {
+        viewModel.loadData(Extras.apiKey, initialSize)
+        viewModel.superHero.observe(viewLifecycleOwner) { newHeroes ->
+            heroAdapter.addAll(newHeroes)
+            heroAdapter.onClick(object : HeroAdapter .OnHeroListener {
+                override fun call(id: String?) {
+                    val navDirections = HomeFragmentDirections.actionHomeFragmentToDetailsFragment(id)
+                    findNavController(requireView()).navigate(navDirections)
+                }
+            })
         }
-        lifecycleScope.launch {
-            viewModel.loadData(Extras.apiKey,initialSize)
-            viewModel.heroes.observe(viewLifecycleOwner){
-                heroAdapter.addAll(it)
-                heroAdapter.onClick(object : HeroAdapter.OnHereoListener{
-                    override fun call(id: String) {
-                        val navDirections = HomeFragmentDirections.actionHomeFragmentToDetailsFragment(id)
-                        findNavController(requireView()).navigate(navDirections)
-                    }
-                })
-            }
-        }
+    }
 
-
-
-        // LOAD MORE DATA ON SCROLL
+    private fun loadMore() {
         binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (!recyclerView.canScrollVertically(1)) {
-                    if (viewModel.isLoading.value == false) {
-                        lifecycleScope.launch {
-                            viewModel.loadData(Extras.apiKey, heroAdapter.itemCount + initialSize)
-                            viewModel.heroes.observe(viewLifecycleOwner) { newHeroes ->
-                                heroAdapter.addAll(newHeroes)
-                                heroAdapter.onClick(object : HeroAdapter.OnHereoListener{
-                                    override fun call(id: String) {
-                                        val navDirections = HomeFragmentDirections.actionHomeFragmentToDetailsFragment(id)
-                                        findNavController(requireView()).navigate(navDirections)
-                                    }
-                                })
+                if (!recyclerView.canScrollVertically(1) && viewModel.isLoading.value == false) {
+                    viewModel.loadData(Extras.apiKey, heroAdapter.itemCount.plus(initialSize))
+                    viewModel.superHero.observe(viewLifecycleOwner) { newHeroes ->
+                        heroAdapter.addAll(newHeroes)
+                        heroAdapter.onClick(object : HeroAdapter.OnHeroListener {
+                            override fun call(id: String?) {
+                                val navDirections = HomeFragmentDirections.actionHomeFragmentToDetailsFragment(id)
+                                findNavController(requireView()).navigate(navDirections)
                             }
-                        }
+                        })
                     }
                 }
             }
         })
-
-
     }
 }

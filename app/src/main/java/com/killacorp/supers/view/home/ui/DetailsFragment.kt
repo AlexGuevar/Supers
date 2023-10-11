@@ -2,84 +2,129 @@ package com.killacorp.supers.view.home.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.setPadding
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.killacorp.supers.R
 import com.killacorp.supers.databinding.DetailsFragmentLayoutBinding
+import com.killacorp.supers.domain.model.HeroModel
 import com.killacorp.supers.utils.Extras
-import com.killacorp.supers.view.home.vm.HereosViewModel
+import com.killacorp.supers.view.home.vm.HeroesViewModel
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class DetailsFragment : Fragment() {
-    private val viewModel: HereosViewModel by viewModels()
+
+    private val superHeroViewModel: HeroesViewModel by viewModels()
     private lateinit var binding : DetailsFragmentLayoutBinding
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = DetailsFragmentLayoutBinding.inflate(inflater,container,false)
         return binding.root
     }
 
 
-    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        activity!!.findViewById<TextView>(R.id.tvTitle).visibility = View.GONE
-        val detailsFragmentArgs : DetailsFragmentArgs? = arguments?.let { DetailsFragmentArgs.fromBundle(it) }
-        lifecycleScope.launch {
-            if (detailsFragmentArgs != null) {
-                viewModel.getHeroDetails(Extras.apiKey,detailsFragmentArgs.id)
+        activity?.findViewById<TextView>(R.id.tvTitle)?.visibility = View.GONE
 
-                ///-------- General Info
-                viewModel.details.observe(viewLifecycleOwner){ item ->
-                    Glide.with(binding.image.context)
-                        .load(item.image?.url)
-                        .error(R.drawable.ic_launcher_foreground)
-                        .into(binding.image)
-                    binding.btnBack.setOnClickListener {
-                        findNavController().popBackStack()
-                    }
-                    binding.tvHeroName.text = item.name
+        loadData()
+        handleError()
+        handleLoading()
 
-                    ///--------powerStats
-                    binding.powerStats.tvIntelligence.text = "Intelligence : "  + item.powerstats.intelligence
-                    binding.powerStats.tvStrength.text = "Strength : " + item.powerstats.strength
-                    binding.powerStats.tvSpeed.text = "Speed : " + item.powerstats.speed
-                    binding.powerStats.tvDurability.text = "Durability : " + item.powerstats.durability
+    }
 
+    private fun loadData() {
+        val args : DetailsFragmentArgs? = arguments?.let { DetailsFragmentArgs.fromBundle(it) }
+        superHeroViewModel.getHeroDetails(Extras.apiKey, args?.id)
+        superHeroViewModel.details.observe(viewLifecycleOwner) { item ->
+            getTopBarInfo(item)
+            getPowerStats(item)
+            getBiography(item)
+            getAppearance(item)
+            getWork(item)
+            getConnections(item)
+        }
+    }
+    private fun getTopBarInfo(item: HeroModel?){
+        if (item != null) {
+            Glide.with(binding.image.context)
+                .load(item.image?.url)
+                .error(R.drawable.ic_launcher_foreground)
+                .into(binding.image)
+        }
+        binding.btnBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
+        binding.tvHeroName.text = item?.name
+    }
 
-                    ///--------biography
-                    binding.biography.tvFullName.text = "Full Name : " + item.biography.fullName
-                    binding.biography.tvPlaceOfBirth.text = "Place Of Birth : " + item.biography.placeOfBirth
-                    binding.biography.tvPublisher.text = "Publisher : " + item.biography.publisher
-                    binding.biography.tvAlignment.text = "Alignment : " + item.biography.alignment
-
-
-                    //--------appearance
-                    binding.appearance.tvGender.text  = "Gender : " + item.appearance.gender
-                    binding.appearance.tvRace.text  = "Race : " + item.appearance.race
-                    binding.appearance.tvEyeColor.text  = "Eye Color : " + item.appearance.eyeColor
-                    binding.appearance.tvHairColor.text  = "Hair Color : " + item.appearance.hairColor
-
-                    //----------work
-                    binding.work.tvOccupation.text  = "Occupation : " + item.work.occupation
-                    binding.work.tvBase.text  = "Base : " + item.work.base
-
-                    //----------connections
-                    binding.connections.tvGroupAffiliation.text  = "Occupation : " + item.connections.groupAffiliation
-                    binding.connections.tvRelatives.text  = "Base : " + item.connections.relatives
-
-                }
+    private fun handleError() {
+        superHeroViewModel.error.observe(viewLifecycleOwner) { errorMessage ->
+            if (errorMessage != null) {
+                binding.bottomText.text = errorMessage
+                binding.image.setPadding(70)
+                binding.image.scaleType = ImageView.ScaleType.FIT_CENTER
+                binding.scrollView.visibility = View.GONE
+                binding.bottomText.visibility = View.VISIBLE
+            } else {
+                binding.bottomText.visibility = View.GONE
             }
         }
+    }
+
+    private fun handleLoading() {
+        superHeroViewModel.isLoading.observe(viewLifecycleOwner) {
+            binding.bottomProgressBar.visibility = if (it) View.VISIBLE else View.GONE
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun getWork(item: HeroModel?) {
+        binding.work.tvOccupation.text = getString(R.string.occupation) + item?.work?.occupation
+        binding.work.tvBase.text = getString(R.string.base) + item?.work?.base
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun getAppearance(item: HeroModel?) {
+        binding.appearance.tvGender.text = getString(R.string.gender) + item?.appearance?.gender
+        binding.appearance.tvRace.text = getString(R.string.race) + item?.appearance?.race
+        binding.appearance.tvEyeColor.text = getString(R.string.eyeColor) + item?.appearance?.eyeColor
+        binding.appearance.tvHairColor.text = getString(R.string.hairColor) + item?.appearance?.hairColor
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun getBiography(item: HeroModel?) {
+        binding.biography.tvFullName.text = getString(R.string.fullName) + item?.biography?.fullName
+        binding.biography.tvPlaceOfBirth.text = getString(R.string.placeOfBirth) + item?.biography?.placeOfBirth
+        binding.biography.tvPublisher.text = getString(R.string.publisher) + item?.biography?.publisher
+        binding.biography.tvAlignment.text = getString(R.string.alignment) + item?.biography?.alignment
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun getPowerStats(item: HeroModel?) {
+        binding.powerStats.tvIntelligence.text = getString(R.string.intelligence) + item?.powerStats?.intelligence
+        binding.powerStats.tvStrength.text = getString(R.string.Strength) + item?.powerStats?.strength
+        binding.powerStats.tvSpeed.text = getString(R.string.speed) + item?.powerStats?.speed
+        binding.powerStats.tvDurability.text = getString(R.string.durability) + item?.powerStats?.durability
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun getConnections(item: HeroModel?) {
+        binding.connections.tvGroupAffiliation.text = getString(R.string.GroupAffiliation) + item?.connections?.groupAffiliation
+        binding.connections.tvRelatives.text = getString(R.string.Relatives) + item?.connections?.relatives
     }
 }

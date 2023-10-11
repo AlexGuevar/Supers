@@ -8,7 +8,7 @@ interface AuthService {
 
     @GET("{access-token}/{id}")
     suspend fun getHero(
-        @Path("access-token") accessToken : String,
-        @Path("id") id : String
+        @Path("access-token") accessToken : String?,
+        @Path("id") id : String?
     ) : HeroModel
 }

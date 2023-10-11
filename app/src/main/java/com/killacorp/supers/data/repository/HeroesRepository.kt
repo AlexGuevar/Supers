@@ -6,11 +6,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class HereosRepository @Inject constructor(
-    private var authService: AuthService
-) {
+class HeroesRepository @Inject constructor(
+    private var authService: AuthService) {
 
-    suspend fun getHero(accessToken : String, id : String) : Flow<HeroModel> {
+    suspend fun getSuperHero(accessToken : String, id : String?) : Flow<HeroModel>{
         return flow {
             emit(authService.getHero(accessToken,id))
         }
